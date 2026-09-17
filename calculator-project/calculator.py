@@ -27,11 +27,11 @@ if __name__ == "__main__":
     print("3. Perkalian")
     print("4. Pembagian")
 
-    choice = input("Masukkan pilihan (1/2/3/4): ")
+    choice = input("Masukkan pilihan: ")
 
     num1 = float(input("Masukkan angka pertama: "))
     num2 = float(input("Masukkan angka kedua: "))
-
+    
     if choice == '1':
         print(f"Hasil: {add(num1, num2)}")
     elif choice == '2':
