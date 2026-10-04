@@ -11,6 +11,8 @@ async function ambilBuku() {
 
     if (error) {
         console.error(error);
+        const daftar = document.getElementById("daftar-buku");
+        daftar.textContent = "Katalog tidak dapat dimuat. Silakan coba lagi nanti.";
         return;
     }
 

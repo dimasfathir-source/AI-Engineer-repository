@@ -5,7 +5,7 @@ async function cekAdmin() {
     const { data: { session } } = await db.auth.getSession();
 
     if (!session) {
-        window.location.href = "pages/login.html";
+        window.location.href = "../pages/login.html";
         return;
     }
 
@@ -17,7 +17,7 @@ async function cekAdmin() {
 
     if (!profil || profil.role !== "admin") {
         await db.auth.signOut();
-        window.location.href = "pages/login.html";
+        window.location.href = "login.html";
         return;
     }
 
@@ -29,7 +29,7 @@ async function cekAdmin() {
 
 document.getElementById("keluar").addEventListener("click", async () => {
     await db.auth.signOut();
-    window.location.href = "pages/login.html";
+    window.location.href = "login.html";
 });
 
 // Isi pilihan bahasa dari config.js
@@ -81,7 +81,7 @@ document.getElementById("form-buku").addEventListener("submit", async (e) => {
             .select();
         error = hasil.error;
 
-        if (!error && hasil.data.length === 0) {
+        if (!error && (!hasil.data || hasil.data.length === 0)) {
             error = { message: "Tidak ada baris yang berubah." };
         }
     }
@@ -219,7 +219,7 @@ async function ubahStatus(id, statusBaru) {
         .eq("id", id)
         .select();
 
-    if (error || data.length === 0) {
+    if (error || !data || data.length === 0) {
         alert("Gagal mengubah status.");
         return;
     }
@@ -238,7 +238,7 @@ async function hapusBuku(id, judul) {
         .eq("id", id)
         .select();
 
-    if (error || data.length === 0) {
+    if (error || !data || data.length === 0) {
         alert("Gagal menghapus buku.");
         return;
     }
