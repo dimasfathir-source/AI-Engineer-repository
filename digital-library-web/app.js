@@ -1,17 +1,13 @@
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let semuaBuku = [];
-const namaBahasa = {
-    id: "Indonesia",
-    en: "English",
-    ar: "Arab",
-    fr: "Prancis",
-    zh: "Mandarin",
-    ja: "Jepang"
-};
+
 
 async function ambilBuku() {
-    const { data, error } = await db.from("koleksi").select("*");
+    const { data, error } = await db
+        .from("koleksi")
+        .select("*")
+        .eq("status", "terbit");
 
     if (error) {
         console.error(error);
@@ -57,11 +53,17 @@ function tampilkanBuku(daftarBuku) {
         kartu.className = "kartu";
 
         const judul = document.createElement("h2");
-        judul.textContent = buku.judul;
+        const tautan = document.createElement("a");
+        tautan.href = `detail.html?id=${buku.id}`;
+        tautan.textContent = buku.judul;
+        judul.appendChild(tautan);
 
         const pengarang = document.createElement("p");
         pengarang.className = "pengarang";
-        pengarang.textContent = `${buku.pengarang} (${buku.tahun})`;
+        pengarang.textContent = [
+            buku.pengarang,
+            buku.tahun ? `(${buku.tahun})` : null
+        ].filter(Boolean).join(" ");
 
         const bahasa = document.createElement("span");
         bahasa.className = "label";
