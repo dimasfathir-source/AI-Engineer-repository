@@ -5,7 +5,7 @@ async function cekAdmin() {
     const { data: { session } } = await db.auth.getSession();
 
     if (!session) {
-        window.location.href = "login.html";
+        window.location.href = "pages/login.html";
         return;
     }
 
@@ -17,7 +17,7 @@ async function cekAdmin() {
 
     if (!profil || profil.role !== "admin") {
         await db.auth.signOut();
-        window.location.href = "login.html";
+        window.location.href = "pages/login.html";
         return;
     }
 
@@ -29,7 +29,7 @@ async function cekAdmin() {
 
 document.getElementById("keluar").addEventListener("click", async () => {
     await db.auth.signOut();
-    window.location.href = "login.html";
+    window.location.href = "pages/login.html";
 });
 
 // Isi pilihan bahasa dari config.js

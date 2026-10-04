@@ -54,7 +54,7 @@ function tampilkanBuku(daftarBuku) {
 
         const judul = document.createElement("h2");
         const tautan = document.createElement("a");
-        tautan.href = `detail.html?id=${buku.id}`;
+        tautan.href = `pages/detail.html?id=${buku.id}`;
         tautan.textContent = buku.judul;
         judul.appendChild(tautan);
 
