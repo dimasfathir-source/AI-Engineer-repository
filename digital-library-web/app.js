@@ -1,6 +1,16 @@
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function muatBuku() {
+let semuaBuku = [];
+const namaBahasa = {
+    id: "Indonesia",
+    en: "English",
+    ar: "Arab",
+    fr: "Prancis",
+    zh: "Mandarin",
+    ja: "Jepang"
+};
+
+async function ambilBuku() {
     const { data, error } = await db.from("koleksi").select("*");
 
     if (error) {
@@ -8,9 +18,41 @@ async function muatBuku() {
         return;
     }
 
-    const daftar = document.getElementById("daftar-buku");
+    semuaBuku = data;
+    isiDropdown();
+    tampilkanBuku(semuaBuku);
+}
 
-    data.forEach(buku => {
+function isiDropdown() {
+    isiOpsi("filter-bahasa", semuaBuku.map(b => b.bahasa), kode => namaBahasa[kode] || kode);
+    isiOpsi("filter-subjek", semuaBuku.map(b => b.subjek), teks => teks);
+}
+
+function isiOpsi(idSelect, nilaiNilai, ubahTeks) {
+    const select = document.getElementById(idSelect);
+    const unik = [...new Set(nilaiNilai.filter(Boolean))].sort();
+
+    unik.forEach(nilai => {
+        const opsi = document.createElement("option");
+        opsi.value = nilai;
+        opsi.textContent = ubahTeks(nilai);
+        select.appendChild(opsi);
+    });
+}
+
+function tampilkanBuku(daftarBuku) {
+    const daftar = document.getElementById("daftar-buku");
+    daftar.innerHTML = "";
+
+    if (daftarBuku.length === 0) {
+        const pesan = document.createElement("p");
+        pesan.className = "kosong";
+        pesan.textContent = "Buku tidak ditemukan.";
+        daftar.appendChild(pesan);
+        return;
+    }
+
+    daftarBuku.forEach(buku => {
         const kartu = document.createElement("div");
         kartu.className = "kartu";
 
@@ -38,4 +80,26 @@ async function muatBuku() {
     });
 }
 
-muatBuku();
+function terapkanFilter() {
+    const kata = document.getElementById("kotak-cari").value.toLowerCase();
+    const bahasa = document.getElementById("filter-bahasa").value;
+    const subjek = document.getElementById("filter-subjek").value;
+
+    const hasil = semuaBuku.filter(buku => {
+        const cocokKata =
+            (buku.judul || "").toLowerCase().includes(kata) ||
+            (buku.pengarang || "").toLowerCase().includes(kata);
+        const cocokBahasa = bahasa === "" || buku.bahasa === bahasa;
+        const cocokSubjek = subjek === "" || buku.subjek === subjek;
+
+        return cocokKata && cocokBahasa && cocokSubjek;
+    });
+
+    tampilkanBuku(hasil);
+}
+
+document.getElementById("kotak-cari").addEventListener("input", terapkanFilter);
+document.getElementById("filter-bahasa").addEventListener("change", terapkanFilter);
+document.getElementById("filter-subjek").addEventListener("change", terapkanFilter);
+
+ambilBuku();
